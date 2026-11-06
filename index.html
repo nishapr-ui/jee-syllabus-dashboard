@@ -1,1 +1,148 @@
-<html></html></html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JEE Syllabus Progress Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="js/firebase-config.js"></script>
+    <script
+      src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"
+      defer
+    ></script>
+    <script
+      src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"
+      defer
+    ></script>
+    <script
+      src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"
+      defer
+    ></script>
+    <script src="js/sync.js" defer></script>
+    <script src="js/app.js" defer></script>
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <div class="header-text">
+          <p class="eyebrow">JEE Main &amp; Advanced</p>
+          <h1>Syllabus Progress Dashboard</h1>
+          <p class="subtitle">
+            Track the same 51 chapters as your Excel workbook — Theory, Practice,
+            Formula, and PYQs — with live completion stats.
+          </p>
+        </div>
+        <div class="header-actions">
+          <label class="btn btn-secondary file-label">
+            Load workbook
+            <input type="file" id="file-input" accept=".xlsx,.xls" hidden />
+          </label>
+          <button type="button" class="btn btn-secondary" id="btn-reset">
+            Reset to template
+          </button>
+          <button type="button" class="btn btn-primary" id="btn-export">
+            Export .xlsx
+          </button>
+        </div>
+      </header>
+
+      <p class="sync-note" id="sync-note" hidden></p>
+
+      <section class="share-bar" aria-label="Shared progress">
+        <div class="share-fields">
+          <label>
+            Shared room ID
+            <input
+              type="text"
+              id="room-id"
+              placeholder="e.g. jee-batch-2026"
+              autocomplete="off"
+            />
+          </label>
+          <button type="button" class="btn btn-secondary" id="btn-apply-room">
+            Apply room
+          </button>
+          <button type="button" class="btn btn-primary" id="btn-copy-link">
+            Copy share link
+          </button>
+        </div>
+        <p class="cloud-status" id="cloud-status"></p>
+      </section>
+
+      <section class="summary" aria-label="Overall progress">
+        <article class="card card-hero">
+          <h2>Total syllabus</h2>
+          <p class="big-number" id="overall-pct">0%</p>
+          <div class="progress-track">
+            <div class="progress-fill" id="overall-bar"></div>
+          </div>
+          <p class="meta" id="overall-meta">0 / 51 chapters tracked</p>
+        </article>
+        <article class="card" id="subject-cards"></article>
+      </section>
+
+      <section class="controls">
+        <div class="tabs" role="tablist" id="subject-tabs"></div>
+        <div class="filters">
+          <label>
+            Search
+            <input type="search" id="search" placeholder="Chapter or topic…" />
+          </label>
+          <label>
+            Priority
+            <select id="filter-priority">
+              <option value="">All</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </label>
+          <label>
+            Status
+            <select id="filter-status">
+              <option value="">All</option>
+              <option value="Not Started">Not Started</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+              <option value="Revision Needed">Revision Needed</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Chapter / topic</th>
+              <th>Main wt.</th>
+              <th>Adv wt.</th>
+              <th>Priority</th>
+              <th>Theory</th>
+              <th>Practice</th>
+              <th>Formula</th>
+              <th>PYQs</th>
+              <th>Overall</th>
+              <th>Target date</th>
+            </tr>
+          </thead>
+          <tbody id="chapter-rows"></tbody>
+        </table>
+      </section>
+
+      <footer class="footer">
+        <p>
+          Progress: Completed = 100%, In Progress = 50%, other statuses = 0% per
+          pillar. Chapter overall is the average of Theory, Practice, Formula, and
+          PYQs. Export writes these columns to Excel (v3 workbooks get a Formula column
+          added).
+        </p>
+        <p>
+          With Firebase enabled, progress is stored in a shared cloud room — everyone
+          with the same link sees updates within seconds. Without Firebase, data stays
+          in this browser only; export .xlsx to back up.
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
